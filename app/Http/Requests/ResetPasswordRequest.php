@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class SignupUserRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
-    // protected $redirectRoute = 'error';
-    // public $validator = null;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,7 +18,12 @@ class SignupUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+            $ptokens= DB::table('password_resets')->where('token', $this->input('token'))->first();
+            if((!is_null($ptokens))&& Carbon::parse($ptokens->created_at)->addMinutes(50)->gte(Carbon::now())){
+                DB::table('password_resets')->where('email', $ptokens->email)->delete();
+                return true;
+            }
+        return false;
     }
 
     /**
@@ -29,13 +34,12 @@ class SignupUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users',
-            'name' => 'required|max:255',
+            'email' => 'required|email',
+            'token' => 'required',
             'password' => 'required|min:6|confirmed',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
-
+    
      /**
      * Handle a failed validation attempt.
      *
@@ -50,8 +54,6 @@ class SignupUserRequest extends FormRequest
             'errors' => $validator->errors(),
             'status' => false
           ], 422));
+        
     }
-    
-
-
 }

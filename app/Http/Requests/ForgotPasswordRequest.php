@@ -6,11 +6,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SignupUserRequest extends FormRequest
+class ForgotPasswordRequest extends FormRequest
 {
-    // protected $redirectRoute = 'error';
-    // public $validator = null;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,13 +26,11 @@ class SignupUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users',
-            'name' => 'required|max:255',
-            'password' => 'required|min:6|confirmed',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'email' => 'required|email',
         ];
     }
 
+    
      /**
      * Handle a failed validation attempt.
      *
@@ -51,7 +46,4 @@ class SignupUserRequest extends FormRequest
             'status' => false
           ], 422));
     }
-    
-
-
 }

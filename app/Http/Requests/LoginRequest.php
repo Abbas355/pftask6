@@ -6,11 +6,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class SignupUserRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
-    // protected $redirectRoute = 'error';
-    // public $validator = null;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,14 +26,12 @@ class SignupUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users',
-            'name' => 'required|max:255',
-            'password' => 'required|min:6|confirmed',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'email' => 'required|email',
+            'password' => 'required|min:6',
         ];
     }
-
-     /**
+    
+         /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
@@ -46,12 +41,10 @@ class SignupUserRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
+        
         throw new HttpResponseException(response()->json([
             'errors' => $validator->errors(),
             'status' => false
           ], 422));
     }
-    
-
-
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\UserAuth;
 use App\Http\Requests\EmailVerificationRequest as RequestsEmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,20 +18,22 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+
+
+Route::prefix('user')->controller(UserController::class)->group(function () {
+    Route::post('/add', [UserController::class,'add']);
+    Route::get('/verfiy/{id}/{hash}',[UserController::class,'verfiyEmail'])->name("verfiy");
+    Route::get('/login', [UserController::class,'login'])->middleware(UserAuth::class);
+    Route::get('/forgot', [UserController::class,'forgot'])->middleware(UserAuth::class)->name('forgot');
+    Route::get('/reset-password/{token}', function ($token) {
+        return response()->pfResponce("change passwor now with this token ".$token,true);
+    })->name('password.reset');
+    Route::post('/resetpassword', [UserController::class,'restPassword'])
+    ->middleware([UserAuth::class])->name('password.update');
 });
 
 
-Route::post('users/add', [UserController::class,'add']);
-Route::get('users/verfiy/{id}/{hash}',[UserController::class,'verfiyEmail'])->name("verfiy.user");
-Route::get('users/login', [UserController::class,'login']);
-Route::get('users/forgot', [UserController::class,'forgotUser'])->name('forgot');
-Route::get('/reset-password/{token}', function ($token) {
-    return "change passwor now with this toke :".$token;
-})->middleware('guest')->name('password.reset');
-Route::post('/reset-password', [UserController::class,'restPasswordUser'])
-->middleware('guest')->name('password.update');
 
 
 
@@ -47,25 +50,3 @@ Route::post('/reset-password', [UserController::class,'restPasswordUser'])
 
 
 
-
-
-
-
-
-// Route::post('users/add', [UserController::class,'addUser']);
-// Route::get('/email/verify', function () {
-//     return "mail send";
-// })->middleware('auth')->name('verification.notice');
-
-// Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-//     $request->fulfill();
-//     return "home";
-// })->name('verification.verify');
-// Route::get('users/login', [UserController::class,'loginUser'])->name('login');
-// Route::get('users/forgot', [UserController::class,'forgotUser'])->name('forgot');
-// Route::get('/reset-password/{token}', function ($token) {
-//     return "change passwor now with this toke :".$token;
-// })->middleware('guest')->name('password.reset');
-
-// Route::post('/reset-password', [UserController::class,'restPasswordUser'])
-// ->middleware('guest')->name('password.update');

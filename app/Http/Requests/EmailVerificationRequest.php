@@ -24,7 +24,6 @@ class EmailVerificationRequest extends FormRequest
                           sha1($this->getsUser()->getEmailForVerification()))) {
             return false;
         }
-       
         return $this->expireToken();
     }
 
@@ -42,7 +41,7 @@ class EmailVerificationRequest extends FormRequest
     public function expireToken()
     {
        $token= DB::table('password_resets')->where('email', $this->getsUser()->email)->first();
-       if((!is_null($token)) &&Carbon::parse($token->created_at)->addMinutes(2)->gte(Carbon::now())){
+       if((!is_null($token)) &&Carbon::parse($token->created_at)->addMinutes(50)->gte(Carbon::now())){
            return true;
        }
        DB::table('password_resets')->where('email', $this->getsUser()->email)->delete();
