@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -15,7 +16,11 @@ class ForgotPasswordRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $user=User::where('email',$this->input('email'))->first();
+        if($user){
+            return true;
+        }
+        return false;
     }
 
     /**

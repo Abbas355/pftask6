@@ -30,9 +30,14 @@ class SignupUserRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:users',
-            'name' => 'required|max:255',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
             'password' => 'required|min:6|confirmed',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'status' => 'required|in:player,coach,club',
+            'date_of_birth' => 'nullable|date|before_or_equal:today',
+            'bio' => 'nullable|string|max:255',
+            'gender' => 'nullable|in:male,female,other',
         ];
     }
 

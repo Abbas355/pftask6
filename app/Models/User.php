@@ -21,10 +21,17 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
-        'photo'
+        'date_of_birth',
+        'bio',
+        'status',
+        'photo',
+        'gender',
+        'address',
+        'phoneNumber'
     ];
 
     /**
@@ -34,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $hidden = [
         'password',
-        'remember_token',
+       // 'remember_token',
     ];
 
     /**
@@ -54,5 +61,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->attributes['password'] = Hash::make($value);
     }
+
+    public function player()
+    {
+        return $this->hasOne(Player::class);
+    }
+    public function tokens()
+    {
+        return $this->hasMany(Token::class);
+    }
+
+ 
    
 }
